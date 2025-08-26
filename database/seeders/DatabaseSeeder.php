@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ServiceSeeder::class,
-            CounterSeeder::class,
             QueueSeeder::class, 
         ]);
     }

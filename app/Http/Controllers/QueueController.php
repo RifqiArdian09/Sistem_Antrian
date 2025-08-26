@@ -15,8 +15,12 @@ class QueueController extends Controller
             ->latest()
             ->paginate(10);
 
-        return inertia('Queues/Index', [
-            'queues' => $queues
+        // Ambil semua services untuk ditampilkan
+        $services = Service::all();
+        
+        return inertia('queues/index', [
+            'queues' => $queues,
+            'services' => $services
         ]);
     }
 

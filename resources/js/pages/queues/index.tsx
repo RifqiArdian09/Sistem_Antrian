@@ -34,9 +34,10 @@ interface Props {
         per_page: number;
         total: number;
     };
+    services: Service[];
 }
 
-export default function QueueIndex({ queues }: Props) {
+export default function QueueIndex({ queues, services }: Props) {
     const [isLoading, setIsLoading] = useState<number | null>(null);
 
     const handleTakeQueue = (serviceId: number) => {
@@ -46,13 +47,15 @@ export default function QueueIndex({ queues }: Props) {
         });
     };
 
-    // Ambil layanan unik dari antrian
-    const services = queues.data.reduce((acc: Service[], queue) => {
-        if (!acc.find(s => s.id === queue.service.id)) {
-            acc.push(queue.service);
-        }
-        return acc;
-    }, []);
+    // Gunakan services yang dikirim dari controller
+    // Jika tidak ada services, ambil dari queues sebagai fallback
+    const availableServices = services && services.length > 0 ? services : 
+        queues.data.reduce((acc: Service[], queue) => {
+            if (!acc.find(s => s.id === queue.service.id)) {
+                acc.push(queue.service);
+            }
+            return acc;
+        }, []);
 
     // Hitung statistik per layanan
     const getServiceStats = (serviceId: number) => {
@@ -82,7 +85,7 @@ export default function QueueIndex({ queues }: Props) {
 
                     {/* Layanan Cards */}
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        {services.map((service) => {
+                        {availableServices.map((service) => {
                             const stats = getServiceStats(service.id);
                             return (
                                 <Card key={service.id} className="hover:shadow-lg transition-shadow">

@@ -11,11 +11,11 @@ class CounterController extends Controller
     public function index()
     {
         $queues = Queue::with('service')
-            ->where('status', 'waiting')
+            ->whereIn('status', ['waiting', 'called', 'completed'])
             ->orderBy('created_at')
             ->get();
 
-        return inertia('Counters/Index', [
+        return inertia('counters/index', [
             'queues' => $queues
         ]);
     }
